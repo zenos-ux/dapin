@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#070b14">
+<title>DebtFlow — Debt Tracker</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+    --bg:#070b14;
+    --card:rgba(15,23,42,.82);
+    --blue:#3b82f6;
+    --blue2:#60a5fa;
+    --green:#10b981;
+    --red:#ef4444;
+    --orange:#f59e0b;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --border:rgba(148,163,184,.13);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter,sans-serif;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at 10% 0%,rgba(59,130,246,.15),transparent 28%),
+        radial-gradient(circle at 90% 20%,rgba(99,102,241,.10),transparent 25%),
+        var(--bg);
+    color:var(--text);
+    padding:18px;
+}
+
+button,input,select{
+    font:inherit;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+}
+
+.app{
+    width:100%;
+    max-width:700px;
+    margin:auto;
+}
+
+/* HEADER */
+
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo{
+    width:45px;
+    height:45px;
+    border-radius:14px;
+    display:grid;
+    place-items:center;
+    font-size:20px;
+    font-weight:800;
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    box-shadow:0 10px 30px rgba(59,130,246,.25);
+}
+
+.brand h1{
+    font-size:20px;
+    font-weight:800;
+}
+
+.brand p{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:3px;
+}
+
+.icon-btn{
+    width:42px;
+    height:42px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:rgba(15,23,42,.7);
+    color:white;
+    display:grid;
+    place-items:center;
+    font-size:22px;
+}
+
+/* BALANCE */
+
+.balance-card{
+    position:relative;
+    overflow:hidden;
+    padding:24px;
+    border-radius:24px;
+    background:linear-gradient(135deg,rgba(37,99,235,.95),rgba(30,64,175,.88));
+    box-shadow:0 25px 60px rgba(30,64,175,.25);
+    margin-bottom:16px;
+}
+
+.balance-card::before{
+    content:"";
+    position:absolute;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    background:rgba(255,255,255,.08);
+    right:-70px;
+    top:-80px;
+}
+
+.balance-label{
+    font-size:12px;
+    opacity:.78;
+    margin-bottom:7px;
+}
+
+.balance{
+    font-size:31px;
+    font-weight:800;
+}
+
+.balance-sub{
+    margin-top:9px;
+    font-size:11px;
+    opacity:.75;
+}
+
+/* STATS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:11px;
+    margin-bottom:20px;
+}
+
+.stat{
+    padding:16px;
+    border-radius:18px;
+    background:var(--card);
+    border:1px solid var(--border);
+    box-shadow:0 15px 35px rgba(0,0,0,.18);
+}
+
+.stat-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.stat-icon{
+    width:32px;
+    height:32px;
+    display:grid;
+    place-items:center;
+    border-radius:10px;
+    font-size:14px;
+}
+
+.blue{
+    background:rgba(59,130,246,.12);
+    color:#60a5fa;
+}
+
+.green{
+    background:rgba(16,185,129,.12);
+    color:#34d399;
+}
+
+.red{
+    background:rgba(239,68,68,.12);
+    color:#f87171;
+}
+
+.orange{
+    background:rgba(245,158,11,.12);
+    color:#fbbf24;
+}
+
+.stat-title{
+    color:var(--muted);
+    font-size:11px;
+}
+
+.stat-value{
+    font-size:17px;
+    font-weight:700;
+}
+
+/* ADD FORM */
+
+.add-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:18px;
+    margin-bottom:18px;
+}
+
+.section-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.section-title h2{
+    font-size:15px;
+}
+
+.section-title span{
+    font-size:11px;
+    color:var(--muted);
+}
+
+.input-label{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    margin:0 0 6px 2px;
+}
+
+.input{
+    width:100%;
+    height:48px;
+    padding:0 14px;
+    color:white;
+    background:#080e1a;
+    border:1px solid var(--border);
+    border-radius:13px;
+    outline:none;
+    margin-bottom:12px;
+    transition:.2s;
+}
+
+.input::placeholder{
+    color:#64748b;
+}
+
+.input:focus{
+    border-color:rgba(59,130,246,.7);
+    box-shadow:0 0 0 3px rgba(59,130,246,.1);
+}
+
+.add-btn{
+    width:100%;
+    height:48px;
+    border-radius:13px;
+    color:white;
+    font-weight:700;
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    box-shadow:0 10px 25px rgba(37,99,235,.2);
+}
+
+.add-btn:active{
+    transform:scale(.98);
+}
+
+/* TOOLBAR */
+
+.toolbar{
+    display:flex;
+    gap:9px;
+    margin-bottom:15px;
+}
+
+.search{
+    flex:1;
+    height:44px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:13px;
+    padding:0 14px;
+    color:white;
+    outline:none;
+    font-size:13px;
+}
+
+.filter{
+    height:44px;
+    padding:0 13px;
+    border-radius:13px;
+    color:white;
+    background:var(--card);
+    border:1px solid var(--border);
+    outline:none;
+    font-size:12px;
+}
+
+/* DEBT CARD */
+
+.debt-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.debt-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:17px;
+    position:relative;
+    overflow:hidden;
+    animation:slideUp .3s ease;
+}
+
+.debt-card.paid{
+    border-color:rgba(16,185,129,.22);
+}
+
+@keyframes slideUp{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.debt-head{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.person{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.avatar{
+    width:42px;
+    height:42px;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    font-weight:800;
+    font-size:15px;
+    color:#bfdbfe;
+    background:rgba(59,130,246,.12);
+}
+
+.name{
+    font-size:15px;
+    font-weight:700;
+}
+
+.phone{
+    color:#60a5fa;
+    font-size:10px;
+    margin-top:4px;
+}
+
+.date{
+    color:var(--muted);
+    font-size:10px;
+    margin-top:3px;
+}
+
+.badge{
+    height:25px;
+    padding:0 9px;
+    border-radius:99px;
+    display:flex;
+    align-items:center;
+    font-size:10px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.badge.unpaid{
+    color:#fca5a5;
+    background:rgba(239,68,68,.11);
+}
+
+.badge.paid{
+    color:#6ee7b7;
+    background:rgba(16,185,129,.11);
+}
+
+.warning{
+    margin-top:13px;
+    padding:10px 11px;
+    border-radius:11px;
+    color:#fbbf24;
+    background:rgba(245,158,11,.07);
+    border:1px solid rgba(245,158,11,.1);
+    font-size:11px;
+}
+
+.details{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid var(--border);
+}
+
+.detail span{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+    margin-bottom:5px;
+}
+
+.detail strong{
+    font-size:13px;
+}
+
+.total-box{
+    grid-column:1/-1;
+    padding:13px;
+    border-radius:13px;
+    background:rgba(59,130,246,.06);
+    border:1px solid rgba(59,130,246,.08);
+}
+
+.total-box strong{
+    font-size:18px;
+}
+
+.red-text{
+    color:#f87171;
+}
+
+.actions{
+    display:flex;
+    gap:7px;
+    margin-top:14px;
+}
+
+.action{
+    flex:1;
+    min-width:0;
+    height:38px;
+    border-radius:10px;
+    font-size:11px;
+    font-weight:700;
+}
+
+.action.green{
+    background:rgba(16,185,129,.12);
+    color:#34d399;
+}
+
+.action.blue{
+    background:rgba(59,130,246,.12);
+    color:#60a5fa;
+}
+
+.action.red{
+    background:rgba(239,68,68,.10);
+    color:#f87171;
+}
+
+/* EMPTY */
+
+.empty{
+    text-align:center;
+    padding:45px 20px;
+    color:var(--muted);
+}
+
+.empty-icon{
+    width:58px;
+    height:58px;
+    margin:0 auto 12px;
+    border-radius:18px;
+    display:grid;
+    place-items:center;
+    font-size:24px;
+    background:rgba(59,130,246,.08);
+}
+
+.empty h3{
+    color:#e2e8f0;
+    font-size:14px;
+    margin-bottom:5px;
+}
+
+.empty p{
+    font-size:11px;
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:22px;
+    transform:translate(-50%,120px);
+    width:calc(100% - 36px);
+    max-width:500px;
+    padding:13px 15px;
+    border-radius:14px;
+    background:#111827;
+    border:1px solid var(--border);
+    box-shadow:0 20px 50px rgba(0,0,0,.4);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:12px;
+    z-index:99;
+    transition:.3s;
+}
+
+.toast.show{
+    transform:translate(-50%,0);
+}
+
+.toast-icon{
+    width:27px;
+    height:27px;
+    border-radius:9px;
+    display:grid;
+    place-items:center;
+    background:rgba(16,185,129,.12);
+    color:#34d399;
+}
+
+/* MODAL */
+
+.modal-bg{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    backdrop-filter:blur(5px);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    z-index:100;
+}
+
+.modal-bg.show{
+    display:flex;
+}
+
+.modal{
+    width:100%;
+    max-width:700px;
+    background:#0f172a;
+    border:1px solid var(--border);
+    border-radius:25px 25px 0 0;
+    padding:23px;
+    animation:modalUp .25s ease;
+}
+
+@keyframes modalUp{
+    from{transform:translateY(100%)}
+    to{transform:translateY(0)}
+}
+
+.modal h3{
+    font-size:17px;
+    margin-bottom:7px;
+}
+
+.modal p{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+}
+
+.modal-actions{
+    display:flex;
+    gap:9px;
+    margin-top:20px;
+}
+
+.modal-btn{
+    flex:1;
+    height:45px;
+    border-radius:12px;
+    font-weight:700;
+}
+
+.cancel{
+    background:#1e293b;
+    color:white;
+}
+
+.confirm{
+    background:#ef4444;
+    color:white;
+}
+
+/* DESKTOP */
+
+@media(min-width:600px){
+
+    .stats{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .stat-value{
+        font-size:14px;
+    }
+
+    .modal-bg{
+        align-items:center;
+    }
+
+    .modal{
+        border-radius:22px;
+        max-width:420px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- HEADER -->
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="logo">₿</div>
+
+            <div>
+                <h1>DebtFlow</h1>
+                <p>Personal Debt Manager</p>
+            </div>
+
+        </div>
+
+        <button class="icon-btn" onclick="scrollToAdd()">
+            +
+        </button>
+
+    </header>
+
+
+    <!-- TOTAL -->
+    <section class="balance-card">
+
+        <div class="balance-label">
+            TOTAL TAGIHAN AKTIF
+        </div>
+
+        <div class="balance" id="totalActive">
+            Rp0
+        </div>
+
+        <div class="balance-sub" id="balanceSub">
+            Tidak ada tagihan aktif
+        </div>
+
+    </section>
+
+
+    <!-- STATS -->
+    <section class="stats">
+
+        <div class="stat">
+
+            <div class="stat-top">
+                <span class="stat-title">
+                    Total Data
+                </span>
+
+                <div class="stat-icon blue">
+                    ▣
+                </div>
+            </div>
+
+            <div class="stat-value" id="totalData">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-top">
+                <span class="stat-title">
+                    Belum Bayar
+                </span>
+
+                <div class="stat-icon red">
+                    !
+                </div>
+            </div>
+
+            <div class="stat-value" id="unpaidData">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-top">
+                <span class="stat-title">
+                    Lunas
+                </span>
+
+                <div class="stat-icon green">
+                    ✓
+                </div>
+            </div>
+
+            <div class="stat-value" id="paidData">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="stat-top">
+                <span class="stat-title">
+                    Total Denda
+                </span>
+
+                <div class="stat-icon orange">
+                    +
+                </div>
+            </div>
+
+            <div class="stat-value" id="totalFine">
+                Rp0
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FORM -->
+    <section class="add-card" id="addSection">
+
+        <div class="section-title">
+
+            <h2>
+                Tambah Hutang
+            </h2>
+
+            <span>
+                Denda Rp500 / hari
+            </span>
+
+        </div>
+
+
+        <form id="debtForm">
+
+            <label class="input-label">
+                Nama Peminjam
+            </label>
+
+            <input
+                class="input"
+                id="name"
+                type="text"
+                maxlength="50"
+                placeholder="Nama"
+                autocomplete="off"
+                required
+            >
+
+
+            <label class="input-label">
+                Nomor WhatsApp
+            </label>
+
+            <input
+                class="input"
+                id="phone"
+                type="tel"
+                maxlength="15"
+                inputmode="numeric"
+                placeholder="Nomor WhatsApp"
+                autocomplete="off"
+                required
+            >
+
+
+            <label class="input-label">
+                Nominal Hutang
+            </label>
+
+            <input
+                class="input"
+                id="amount"
+                type="number"
+                min="1"
+                inputmode="numeric"
+                placeholder="Nominal Hutang"
+                required
+            >
+
+
+            <button class="add-btn" type="submit">
+                + Tambahkan Hutang
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- SEARCH -->
+    <div class="toolbar">
+
+        <input
+            class="search"
+            id="search"
+            type="search"
+            placeholder="Cari nama atau nomor..."
+            autocomplete="off"
+        >
+
+        <select class="filter" id="filter">
+
+            <option value="all">
+                Semua
+            </option>
+
+            <option value="unpaid">
+                Belum Bayar
+            </option>
+
+            <option value="paid">
+                Lunas
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- LIST -->
+    <main class="debt-list" id="debtList"></main>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div class="toast" id="toast">
+
+    <div class="toast-icon">
+        ✓
+    </div>
+
+    <span id="toastText">
+        Berhasil
+    </span>
+
+</div>
+
+
+<!-- DELETE MODAL -->
+
+<div class="modal-bg" id="modal">
+
+    <div class="modal">
+
+        <h3>
+            Hapus data hutang?
+        </h3>
+
+        <p>
+            Data yang sudah dihapus tidak dapat dikembalikan.
+            Pastikan kamu benar-benar ingin menghapus data ini.
+        </p>
+
+        <div class="modal-actions">
+
+            <button
+                class="modal-btn cancel"
+                onclick="closeModal()"
+            >
+                Batal
+            </button>
+
+            <button
+                class="modal-btn confirm"
+                onclick="confirmDelete()"
+            >
+                Hapus
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   CONFIG
+========================= */
+
+const DENDA_PER_HARI = 500;
+const HARI_PERINGATAN = 7;
+
+
+/* =========================
+   LOAD DATA
+========================= */
+
+let debts =
+    JSON.parse(
+        localStorage.getItem("debtflow_data")
+    ) || [];
+
+let deleteId = null;
+
+
+/* =========================
+   ELEMENT
+========================= */
+
+const form =
+    document.getElementById("debtForm");
+
+const nameInput =
+    document.getElementById("name");
+
+const phoneInput =
+    document.getElementById("phone");
+
+const amountInput =
+    document.getElementById("amount");
+
+const debtList =
+    document.getElementById("debtList");
+
+const searchInput =
+    document.getElementById("search");
+
+const filterInput =
+    document.getElementById("filter");
+
+
+/* =========================
+   FORMAT RUPIAH
+========================= */
+
+function rupiah(number){
+
+    return new Intl.NumberFormat("id-ID",{
+        style:"currency",
+        currency:"IDR",
+        minimumFractionDigits:0
+    }).format(number);
+
+}
+
+
+/* =========================
+   FORMAT DATE
+========================= */
+
+function formatDate(timestamp){
+
+    return new Intl.DateTimeFormat("id-ID",{
+        day:"2-digit",
+        month:"short",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
+    }).format(new Date(timestamp));
+
+}
+
+
+/* =========================
+   NORMALIZE WHATSAPP
+========================= */
+
+function normalizePhone(phone){
+
+    let clean =
+        phone.replace(/\D/g,"");
+
+    if(clean.startsWith("0")){
+
+        clean =
+            "62" + clean.substring(1);
+
+    }
+
+    if(clean.startsWith("8")){
+
+        clean =
+            "62" + clean;
+
+    }
+
+    return clean;
+
+}
+
+
+/* =========================
+   DISPLAY PHONE
+========================= */
+
+function displayPhone(phone){
+
+    let clean =
+        phone.replace(/\D/g,"");
+
+    if(clean.startsWith("62")){
+
+        return "0" + clean.substring(2);
+
+    }
+
+    return clean;
+
+}
+
+
+/* =========================
+   LATE DAYS
+========================= */
+
+function getLateDays(timestamp){
+
+    const difference =
+        Date.now() - timestamp;
+
+    const days =
+        Math.floor(
+            difference /
+            (1000 * 60 * 60 * 24)
+        );
+
+    return Math.max(days,0);
+
+}
+
+
+/* =========================
+   SAVE
+========================= */
+
+function save(){
+
+    localStorage.setItem(
+        "debtflow_data",
+        JSON.stringify(debts)
+    );
+
+    render();
+
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+let toastTimer;
+
+function toast(message){
+
+    const box =
+        document.getElementById("toast");
+
+    const text =
+        document.getElementById("toastText");
+
+    text.textContent = message;
+
+    box.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(()=>{
+            box.classList.remove("show");
+        },2500);
+
+}
+
+
+/* =========================
+   ADD DEBT
+========================= */
+
+form.addEventListener(
+    "submit",
+    function(e){
+
+        e.preventDefault();
+
+        const name =
+            nameInput.value.trim();
+
+        const phone =
+            normalizePhone(
+                phoneInput.value
+            );
+
+        const amount =
+            Number(amountInput.value);
+
+
+        if(!name){
+
+            toast(
+                "Nama peminjam belum diisi."
+            );
+
+            nameInput.focus();
+
+            return;
+
+        }
+
+
+        if(!phone || phone.length < 10){
+
+            toast(
+                "Nomor WhatsApp tidak valid."
+            );
+
+            phoneInput.focus();
+
+            return;
+
+        }
+
+
+        if(!amount || amount <= 0){
+
+            toast(
+                "Nominal hutang tidak valid."
+            );
+
+            amountInput.focus();
+
+            return;
+
+        }
+
+
+        const debt = {
+
+            id:Date.now(),
+
+            name:name,
+
+            phone:phone,
+
+            amount:amount,
+
+            timestamp:Date.now(),
+
+            isPaid:false,
+
+            dendaAkhir:0
+
+        };
+
+
+        debts.push(debt);
+
+        save();
+
+        form.reset();
+
+        nameInput.focus();
+
+        toast(
+            "Data hutang berhasil ditambahkan."
+        );
+
+    }
+);
+
+
+/* =========================
+   AVATAR
+========================= */
+
+function getInitial(name){
+
+    return name
+        .trim()
+        .charAt(0)
+        .toUpperCase();
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHTML(text){
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================
+   WHATSAPP LINK
+========================= */
+
+function whatsappLink(debt){
+
+    const days =
+        getLateDays(debt.timestamp);
+
+    const fine =
+        days * DENDA_PER_HARI;
+
+    const total =
+        debt.amount + fine;
+
+    const date =
+        formatDate(debt.timestamp);
+
+
+    const message =
+`Halo ${debt.name},
+
+Mau mengingatkan soal pinjaman kamu tanggal ${date}.
+
+Rincian:
+• Pinjaman: ${rupiah(debt.amount)}
+• Denda (${days} hari): ${rupiah(fine)}
+• Total tagihan: ${rupiah(total)}
+
+Mohon segera dilunasi ya. Terima kasih.`;
+
+
+    return (
+        "https://wa.me/" +
+        debt.phone +
+        "?text=" +
+        encodeURIComponent(message)
+    );
+
+}
+
+
+/* =========================
+   RENDER
+========================= */
+
+function render(){
+
+    updateStats();
+
+
+    const search =
+        searchInput.value
+        .toLowerCase()
+        .trim();
+
+
+    const filter =
+        filterInput.value;
+
+
+    let filtered =
+        debts.filter(debt=>{
+
+            const matchSearch =
+                debt.name
+                .toLowerCase()
+                .includes(search)
+                ||
+                debt.phone
+                .includes(search)
+                ||
+                displayPhone(debt.phone)
+                .includes(search);
+
+
+            const matchFilter =
+                filter === "all"
+                ||
+                (filter === "paid" && debt.isPaid)
+                ||
+                (filter === "unpaid" && !debt.isPaid);
+
+
+            return (
+                matchSearch &&
+                matchFilter
+            );
+
+        });
+
+
+    filtered.sort((a,b)=>{
+
+        if(a.isPaid !== b.isPaid){
+
+            return a.isPaid ? 1 : -1;
+
+        }
+
+        return b.timestamp - a.timestamp;
+
+    });
+
+
+    if(filtered.length === 0){
+
+        debtList.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    ▣
+                </div>
+
+                <h3>
+                    ${
+                        debts.length === 0
+                        ? "Belum ada data hutang"
+                        : "Data tidak ditemukan"
+                    }
+                </h3>
+
+                <p>
+                    ${
+                        debts.length === 0
+                        ? "Tambahkan data hutang pertama kamu."
+                        : "Coba gunakan pencarian lain."
+                    }
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    debtList.innerHTML = "";
+
+
+    filtered.forEach(debt=>{
+
+        const days =
+            debt.isPaid
+            ? 0
+            : getLateDays(debt.timestamp);
+
+
+        const fine =
+            debt.isPaid
+            ? debt.dendaAkhir
+            : days * DENDA_PER_HARI;
+
+
+        const total =
+            debt.amount + fine;
+
+
+        const warning =
+            !debt.isPaid &&
+            days >= HARI_PERINGATAN
+
+            ? `
+                <div class="warning">
+                    ⚠ Sudah terlambat ${days} hari.
+                    Segera lakukan penagihan.
+                </div>
+              `
+
+            : "";
+
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "debt-card " +
+            (debt.isPaid ? "paid" : "");
+
+
+        card.innerHTML = `
+
+            <div class="debt-head">
+
+                <div class="person">
+
+                    <div class="avatar">
+                        ${escapeHTML(
+                            getInitial(debt.name)
+                        )}
+                    </div>
+
+                    <div>
+
+                        <div class="name">
+                            ${escapeHTML(debt.name)}
+                        </div>
+
+                        <div class="phone">
+                            📱 ${escapeHTML(
+                                displayPhone(debt.phone)
+                            )}
+                        </div>
+
+                        <div class="date">
+                            ${formatDate(debt.timestamp)}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="badge ${
+                    debt.isPaid
+                    ? "paid"
+                    : "unpaid"
+                }">
+
+                    ${
+                        debt.isPaid
+                        ? "✓ LUNAS"
+                        : "BELUM BAYAR"
+                    }
+
+                </div>
+
+            </div>
+
+
+            ${warning}
+
+
+            <div class="details">
+
+                <div class="detail">
+
+                    <span>
+                        Pinjaman Awal
+                    </span>
+
+                    <strong>
+                        ${rupiah(debt.amount)}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <span>
+                        Denda ${
+                            debt.isPaid
+                            ? ""
+                            : "(" + days + " hari)"
+                        }
+                    </span>
+
+                    <strong class="${
+                        fine > 0
+                        ? "red-text"
+                        : ""
+                    }">
+
+                        ${rupiah(fine)}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="detail total-box">
+
+                    <span>
+                        Total Harus Dibayar
+                    </span>
+
+                    <strong>
+                        ${rupiah(total)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                ${
+                    !debt.isPaid
+
+                    ? `
+                        <button
+                            class="action green"
+                            onclick="markPaid(${debt.id})"
+                        >
+                            ✓ Tandai Lunas
+                        </button>
+                      `
+
+                    : ""
+                }
+
+
+                ${
+                    !debt.isPaid
+
+                    ? `
+                        <button
+                            class="action blue"
+                            onclick="sendWA(${debt.id})"
+                        >
+                            WhatsApp
+                        </button>
+                      `
+
+                    : ""
+                }
+
+
+                <button
+                    class="action red"
+                    onclick="openDelete(${debt.id})"
+                >
+                    Hapus
+                </button>
+
+            </div>
+
+        `;
+
+
+        debtList.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================
+   UPDATE STATISTICS
+========================= */
+
+function updateStats(){
+
+    const unpaid =
+        debts.filter(
+            d=>!d.isPaid
+        );
+
+
+    const paid =
+        debts.filter(
+            d=>d.isPaid
+        );
+
+
+    let activeTotal = 0;
+
+    let fineTotal = 0;
+
+
+    unpaid.forEach(debt=>{
+
+        const fine =
+            getLateDays(
+                debt.timestamp
+            ) * DENDA_PER_HARI;
+
+
+        activeTotal +=
+            debt.amount + fine;
+
+
+        fineTotal += fine;
+
+    });
+
+
+    paid.forEach(debt=>{
+
+        fineTotal +=
+            debt.dendaAkhir;
+
+    });
+
+
+    document.getElementById(
+        "totalData"
+    ).textContent = debts.length;
+
+
+    document.getElementById(
+        "unpaidData"
+    ).textContent = unpaid.length;
+
+
+    document.getElementById(
+        "paidData"
+    ).textContent = paid.length;
+
+
+    document.getElementById(
+        "totalFine"
+    ).textContent =
+        rupiah(fineTotal);
+
+
+    document.getElementById(
+        "totalActive"
+    ).textContent =
+        rupiah(activeTotal);
+
+
+    document.getElementById(
+        "balanceSub"
+    ).textContent =
+        unpaid.length === 0
+        ? "Tidak ada tagihan aktif"
+        : `${unpaid.length} tagihan belum dilunasi`;
+
+}
+
+
+/* =========================
+   MARK PAID
+========================= */
+
+window.markPaid = function(id){
+
+    const debt =
+        debts.find(
+            d=>d.id === id
+        );
+
+
+    if(!debt) return;
+
+
+    const days =
+        getLateDays(
+            debt.timestamp
+        );
+
+
+    debt.dendaAkhir =
+        days * DENDA_PER_HARI;
+
+
+    debt.isPaid = true;
+
+
+    save();
+
+
+    toast(
+        `${debt.name} ditandai sebagai lunas.`
+    );
+
+};
+
+
+/* =========================
+   SEND WHATSAPP
+========================= */
+
+window.sendWA = function(id){
+
+    const debt =
+        debts.find(
+            d=>d.id === id
+        );
+
+
+    if(!debt) return;
+
+
+    window.open(
+        whatsappLink(debt),
+        "_blank"
+    );
+
+};
+
+
+/* =========================
+   DELETE
+========================= */
+
+window.openDelete = function(id){
+
+    deleteId = id;
+
+    document
+        .getElementById("modal")
+        .classList.add("show");
+
+};
+
+
+window.closeModal = function(){
+
+    deleteId = null;
+
+    document
+        .getElementById("modal")
+        .classList.remove("show");
+
+};
+
+
+window.confirmDelete = function(){
+
+    if(deleteId === null)
+        return;
+
+
+    debts =
+        debts.filter(
+            d=>d.id !== deleteId
+        );
+
+
+    closeModal();
+
+    save();
+
+    toast(
+        "Data hutang berhasil dihapus."
+    );
+
+};
+
+
+/* =========================
+   SEARCH
+========================= */
+
+searchInput.addEventListener(
+    "input",
+    render
+);
+
+
+filterInput.addEventListener(
+    "change",
+    render
+);
+
+
+/* =========================
+   SCROLL
+========================= */
+
+window.scrollToAdd = function(){
+
+    document
+        .getElementById("addSection")
+        .scrollIntoView({
+            behavior:"smooth",
+            block:"center"
+        });
+
+
+    setTimeout(()=>{
+        nameInput.focus();
+    },400);
+
+};
+
+
+/* =========================
+   MODAL CLOSE
+========================= */
+
+document
+    .getElementById("modal")
+    .addEventListener(
+        "click",
+        function(e){
+
+            if(e.target === this){
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+/* =========================
+   AUTO REFRESH
+========================= */
+
+setInterval(
+    render,
+    60000
+);
+
+
+/* =========================
+   START
+========================= */
+
+render();
+
+</script>
+
+</body>
+</html>
